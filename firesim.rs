@@ -24,7 +24,7 @@ impl event::EventHandler for MainState {
     }
 
     fn draw(&mut self, ctx: &mut Context) -> GameResult {
-        graphics::clear(ctx, graphihcs::BLACK);
+        graphics::clear(ctx, graphics::BLACK);
 
         let circle = graphics::Mesh::new_circle(
             ctx,
