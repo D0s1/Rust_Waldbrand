@@ -34,6 +34,7 @@ impl Rand for Entry {
 struct State {
     grid: [[Entry; 100]; 100],
     fire_prob: f32,
+    spawn_tree_prob: f32,
     neighbours: [(i8, i8); 8],
     finished: bool,
 }
@@ -53,6 +54,7 @@ impl State {
 	State {
 	    grid,
 	    fire_prob: 0.01,
+	    spawn_tree_prob: 0.01,
 	    neighbours: [
 		(-1, -1),
 		(-1, 0),
@@ -75,7 +77,9 @@ impl event::EventHandler for State {
 	    for y in 1..99 {
 		for x in 1..99 {
 		    if let Entry::Empty = self.grid[x][y] {
-			continue;
+				if rand::thread_rng().gen::<f32>() < self.spawn_tree_prob {
+					self.grid[x][y] = Entry::Tree
+				}
 		    }
 		    self.grid[x][y] = match self.grid[x][y] {
 			Entry::Tree => {
