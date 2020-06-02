@@ -133,6 +133,8 @@ impl event::EventHandler for State {
 	}
 	const RED: Color = Color::new(1.0, 0.0, 0.0, 1.0);
 	const GREEN: Color = Color::new(0.0, 1.0, 0.0, 1.0);
+	const BROWN: Color = Color::new(0.46,0.16,0.16,1.0);
+	const BLACK: Color = Color::new(1.0,1.0,1.0,1.0);
 	graphics::clear(ctx, graphics::BLACK);
 	let dst = nalgebra::Point2::new(0.0, 0.0);
 	let mb = &mut MeshBuilder::new();
