@@ -7,11 +7,12 @@ use ggez::timer;
 use ggez::{Context, ContextBuilder, GameResult};
 use rand::{Rand, Rng};
 
+
 const SCREEN_WIDTH: f32 = 1000.0;
 const SCREEN_HEIGHT: f32 = 1000.0;
 const ENTRY_WIDTH: f32 = SCREEN_WIDTH / 100.0;
 const ENTRY_HEIGHT: f32 = SCREEN_HEIGHT / 100.0;
-const FIRE_AGE: u8 = 5;
+const FIRE_AGE: u8 = 200;
 
 #[derive(Debug, Copy, Clone)]
 enum Entry {
@@ -24,8 +25,8 @@ impl Rand for Entry {
     fn rand<R: Rng>(rng: &mut R) -> Self {
 	match rng.gen::<f32>() {
 	    i if i < 0.1 => Entry::Empty,
-	    i if i < 0.9 => Entry::Tree,
-	    _ => Entry::Fire(FIRE_AGE),
+	    _ =>  Entry::Tree,
+	    
 	}
     }
 }
@@ -46,9 +47,12 @@ impl State {
 		grid[y][x] = rng.gen();
 	    }
 	}
+	let rand_x = rng.gen_range(1, 99);
+	let rand_y = rng.gen_range(1, 99);
+	grid [rand_x] [rand_y] = Entry::Fire(FIRE_AGE);
 	State {
 	    grid,
-	    fire_prob: 0.1,
+	    fire_prob: 0.01,
 	    neighbours: [
 		(-1, -1),
 		(-1, 0),
@@ -66,7 +70,8 @@ impl State {
 
 impl event::EventHandler for State {
     fn update(&mut self, ctx: &mut Context) -> GameResult<()> {
-	if timer::check_update_time(ctx, 1) {
+	
+	if timer::check_update_time(ctx, 20) {
 	    for y in 1..99 {
 		for x in 1..99 {
 		    if let Entry::Empty = self.grid[x][y] {
@@ -78,7 +83,8 @@ impl event::EventHandler for State {
 			    for (dx, dy) in self.neighbours.iter() {
 				if let Entry::Fire(_) =
 				    self.grid[(x as i8 + dx) as usize][(y as i8 + dy) as usize]
-				{
+				{	
+					
 				    if rand::thread_rng().gen::<f32>() < self.fire_prob {
 					fire_p = true;
 					break;
