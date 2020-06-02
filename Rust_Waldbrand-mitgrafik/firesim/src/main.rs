@@ -12,13 +12,13 @@ const SCREEN_WIDTH: f32 = 1000.0;
 const SCREEN_HEIGHT: f32 = 1000.0;
 const ENTRY_WIDTH: f32 = SCREEN_WIDTH / 100.0;
 const ENTRY_HEIGHT: f32 = SCREEN_HEIGHT / 100.0;
-const FIRE_AGE: u8 = 200;
+const FIRE_AGE: u32 = 600;
 
 #[derive(Debug, Copy, Clone)]
 enum Entry {
     Empty,
     Tree,
-    Fire(u8),
+    Fire(u32),
 }
 
 impl Rand for Entry {
@@ -53,8 +53,8 @@ impl State {
 	grid [rand_x] [rand_y] = Entry::Fire(FIRE_AGE);
 	State {
 	    grid,
-	    fire_prob: 0.01,
-	    spawn_tree_prob: 0.01,
+	    fire_prob: 0.002,
+	    spawn_tree_prob: 0.004,
 	    neighbours: [
 		(-1, -1),
 		(-1, 0),
@@ -73,7 +73,7 @@ impl State {
 impl event::EventHandler for State {
     fn update(&mut self, ctx: &mut Context) -> GameResult<()> {
 	
-	if timer::check_update_time(ctx, 20) {
+	if timer::check_update_time(ctx, &0) {
 	    for y in 1..99 {
 		for x in 1..99 {
 		    if let Entry::Empty = self.grid[x][y] {
