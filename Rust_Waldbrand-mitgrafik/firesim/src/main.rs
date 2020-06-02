@@ -73,7 +73,7 @@ impl State {
 impl event::EventHandler for State {
     fn update(&mut self, ctx: &mut Context) -> GameResult<()> {
 	
-	if timer::check_update_time(ctx, &0) {
+	if timer::check_update_time(ctx, 60) {
 	    for y in 1..99 {
 		for x in 1..99 {
 		    if let Entry::Empty = self.grid[x][y] {
