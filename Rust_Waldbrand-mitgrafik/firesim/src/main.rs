@@ -18,6 +18,7 @@ const BURNT_AGE: u32 = 650;
 #[derive(Debug, Copy, Clone)]
 enum Entry {
     Empty,
+	Empty_brand,
     Tree,
     Fire(u32),
     Burnt(u32),
@@ -26,7 +27,7 @@ enum Entry {
 impl Rand for Entry {
     fn rand<R: Rng>(rng: &mut R) -> Self {
 	match rng.gen::<f32>() {
-	    i if i < 0.1 => Entry::Empty,
+	    i if i < 0.1 => Entry::Empty_brand,
 	    _ =>  Entry::Tree,
 	    
 	}
@@ -78,7 +79,7 @@ impl event::EventHandler for State {
 	if timer::check_update_time(ctx, 60) {
 	    for y in 1..99 {
 		for x in 1..99 {
-		    if let Entry::Empty = self.grid[x][y] {
+		    if let Entry::Empty_brand = self.grid[x][y] {
 				if rand::thread_rng().gen::<f32>() < self.spawn_tree_prob {
 					self.grid[x][y] = Entry::Tree
 				}
@@ -115,10 +116,10 @@ impl event::EventHandler for State {
 			    if age >= 1 {
 				Entry::Burnt(age - 1)
 			    } else {
-				Entry::Empty
+				Entry::Empty_brand
 			    }
 			}
-			_ => Entry::Empty,
+			_ => Entry::Empty_brand,
 		    }
 		}
 	    }
@@ -162,8 +163,11 @@ impl event::EventHandler for State {
 		    Entry::Tree => {
 			assign_rect(mb, GREEN, &mut counter);
 		    }
-		    Entry::Empty => {
+			Entry::Empty_brand => {
 			assign_rect(mb, BROWN, &mut counter);
+			}
+		    Entry::Empty => {
+			assign_rect(mb,graphics::WHITE, &mut counter);
 		    }
 		}
 	    }
