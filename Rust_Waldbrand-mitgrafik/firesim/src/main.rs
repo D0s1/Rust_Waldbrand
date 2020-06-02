@@ -12,13 +12,15 @@ const SCREEN_WIDTH: f32 = 1000.0;
 const SCREEN_HEIGHT: f32 = 1000.0;
 const ENTRY_WIDTH: f32 = SCREEN_WIDTH / 100.0;
 const ENTRY_HEIGHT: f32 = SCREEN_HEIGHT / 100.0;
-const FIRE_AGE: u32 = 600;
+const FIRE_AGE: u32 = 450;
+const BURNT_AGE: u32 = 650;
 
 #[derive(Debug, Copy, Clone)]
 enum Entry {
     Empty,
     Tree,
     Fire(u32),
+    Burnt(u32),
 }
 
 impl Rand for Entry {
@@ -106,6 +108,13 @@ impl event::EventHandler for State {
 			    if age >= 1 {
 				Entry::Fire(age - 1)
 			    } else {
+				Entry::Burnt(BURNT_AGE)
+			    }
+			}
+			Entry::Burnt(age) => {
+			    if age >= 1 {
+				Entry::Burnt(age - 1)
+			    } else {
 				Entry::Empty
 			    }
 			}
@@ -134,7 +143,7 @@ impl event::EventHandler for State {
 	const RED: Color = Color::new(1.0, 0.0, 0.0, 1.0);
 	const GREEN: Color = Color::new(0.0, 1.0, 0.0, 1.0);
 	const BROWN: Color = Color::new(0.46,0.16,0.16,1.0);
-	const GREY: Color = Color::new(0.8,0.8,0.8,1.0);
+	const GREY: Color = Color::new(0.5,0.5,0.5,1.0);
 	graphics::clear(ctx, graphics::BLACK);
 	let dst = nalgebra::Point2::new(0.0, 0.0);
 	let mb = &mut MeshBuilder::new();
@@ -147,11 +156,14 @@ impl event::EventHandler for State {
 		    Entry::Fire(_) => {
 			assign_rect(mb, RED, &mut counter);
 		    }
+		    Entry::Burnt(_) => {
+			assign_rect(mb, GREY, &mut counter);
+		    }
 		    Entry::Tree => {
 			assign_rect(mb, GREEN, &mut counter);
 		    }
 		    Entry::Empty => {
-			assign_rect(mb, graphics::WHITE, &mut counter);
+			assign_rect(mb, BROWN, &mut counter);
 		    }
 		}
 	    }
