@@ -98,7 +98,8 @@ impl event::EventHandler for State {
 
 			Entry::Fire(age) => {
 			    if age >= 1 {
-				Entry::Fire(age - 1)
+				let randagesub = rand::thread_rng().gen_range(0, 2);
+				Entry::Fire(age - randagesub)
 			    } else {
 				Entry::Burnt(BURNT_AGE)
 			    }
