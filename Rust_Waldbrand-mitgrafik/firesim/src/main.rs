@@ -36,6 +36,7 @@ struct State {
     grid: [[Entry; 100]; 100],
     fire_prob: f32,
     spawn_tree_prob: f32,
+    empty_prob: f32,
     neighbours: [(i8, i8); 8],
 }
 
@@ -55,6 +56,7 @@ impl State {
 	    grid,
 	    fire_prob: 0.002,
 	    spawn_tree_prob: 0.004,
+	    empty_prob: 0.002,
 	    neighbours: [
 		(-1, -1),
 		(-1, 0),
@@ -111,9 +113,11 @@ impl event::EventHandler for State {
 			Entry::Burnt(age) => {
 			    if age >= 1 {
 				Entry::Burnt(age - 1)
-			    } else {
+			    } else if rand::thread_rng().gen::<f32>() < self.empty_prob {
 				Entry::Empty
-			    }
+			    } else {
+				Entry::Burnt(20)
+				}
 			}
 			_ => Entry::Empty,
 		    }
@@ -138,9 +142,11 @@ impl event::EventHandler for State {
 	    }
 	}
 	const RED: Color = Color::new(1.0, 0.0, 0.0, 1.0);
-	const GREEN: Color = Color::new(0.0, 1.0, 0.0, 1.0);
-	const BROWN: Color = Color::new(0.46, 0.16, 0.16, 1.0);
-	const GREY: Color = Color::new(0.5, 0.5, 0.5, 1.0);
+	const GREEN: Color = Color::new(0.2, 0.5, 0.2, 1.0);
+	const BROWN: Color = Color::new(0.46,0.16,0.16,1.0);
+	const GREY: Color = Color::new(0.5,0.5,0.5,1.0);
+	const ORANGE: Color = Color::new(1.0,0.45,0.007,1.0);
+	const YELLOW: Color = Color::new(1.0,0.8,0.0,1.0);
 	graphics::clear(ctx, graphics::BLACK);
 	let dst = nalgebra::Point2::new(0.0, 0.0);
 	let mb = &mut MeshBuilder::new();
@@ -148,8 +154,14 @@ impl event::EventHandler for State {
 	for y in 0..100 {
 	    for x in 0..100 {
 		match self.grid[x][y] {
-		    Entry::Fire(_) => {
-			assign_rect(mb, RED, &mut counter);
+		    Entry::Fire(age) => {
+				if age > FIRE_AGE/2 + FIRE_AGE/3 {
+						assign_rect(mb, YELLOW, &mut counter);
+					} else if age > FIRE_AGE/2 {
+						assign_rect(mb, ORANGE, &mut counter);
+					}else {
+						assign_rect(mb, RED, &mut counter);
+					}
 		    }
 		    Entry::Burnt(_) => {
 			assign_rect(mb, GREY, &mut counter);
