@@ -54,9 +54,9 @@ impl State {
 	grid[rand_x][rand_y] = Entry::Fire(FIRE_AGE);
 	State {
 	    grid,
-	    fire_prob: 0.002,
-	    spawn_tree_prob: 0.004,
-	    empty_prob: 0.002,
+	    fire_prob: 0.0025,
+	    spawn_tree_prob: 0.000005,
+	    empty_prob: 0.0002,
 	    neighbours: [
 		(-1, -1),
 		(-1, 0),
