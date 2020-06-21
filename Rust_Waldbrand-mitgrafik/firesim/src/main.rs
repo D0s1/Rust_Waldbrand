@@ -21,6 +21,7 @@ enum Entry {
     Tree,
     Fire(u32),
     Burnt(u32),
+	Water,
 }
 
 impl Rand for Entry {
@@ -35,6 +36,11 @@ impl Rand for Entry {
 struct State {
     grid: [[Entry; 100]; 100],
     fire_prob: f32,
+	water_prob: f32,
+	water_max: i16,
+	water_side_max: i16,
+	water_side_count: i16,
+	water_count: i16,
     spawn_tree_prob: f32,
     empty_prob: f32,
     neighbours: [(i8, i8); 8],
@@ -52,9 +58,17 @@ impl State {
 	let rand_x = rng.gen_range(1, 99);
 	let rand_y = rng.gen_range(1, 99);
 	grid[rand_x][rand_y] = Entry::Fire(FIRE_AGE);
+	let rand_x = rng.gen_range(1, 99);
+	let rand_y = rng.gen_range(1, 99);
+	grid[rand_x][rand_y] = Entry::Water;
 	State {
 	    grid,
 	    fire_prob: 0.0025,
+		water_prob: 0.8,
+		water_max: rng.gen_range(100,1200),
+		water_side_max: rng.gen_range(5,15),
+		water_side_count: 0,
+		water_count: 0,
 	    spawn_tree_prob: 0.000005,
 	    empty_prob: 0.0002,
 	    neighbours: [
@@ -74,11 +88,13 @@ impl State {
 impl event::EventHandler for State {
     fn update(&mut self, ctx: &mut Context) -> GameResult<()> {
 	if timer::check_update_time(ctx, 60) {
+	let mut rng = rand::thread_rng();
 	    for y in 1..99 {
 		for x in 1..99 {
 		    self.grid[x][y] = match self.grid[x][y] {
 			Entry::Tree => {
 			    let mut fire_p = false;
+				let mut fire_water = false;
 			    for (dx, dy) in self.neighbours.iter() {
 				if let Entry::Fire(_) =
 				    self.grid[(x as i8 + dx) as usize][(y as i8 + dy) as usize]
@@ -87,30 +103,84 @@ impl event::EventHandler for State {
 					fire_p = true;
 					break;
 				    }
+			
+				}
+				if let Entry::Water =
+				self.grid[(x as i8 + dx) as usize][(y as i8 + dy) as usize]
+				{	self.water_prob= rng.gen_range(50.0,80.0) / 100.0;
+				    if rand::thread_rng().gen::<f32>() < self.water_prob && self.water_count < self.water_max && self.water_side_max > self.water_side_count{
+					self.water_count = (self.water_count + 1);
+					self.water_side_count = (self.water_side_count +1);
+					fire_water = true;
+					break;
+				    }
 				}
 			    }
 			    if fire_p {
 				Entry::Fire(FIRE_AGE)
 			    } else {
+				if fire_water {
+				Entry::Water}
+				else{
 				Entry::Tree
 			    }
+				
+			}
 			}
 
 			Entry::Fire(age) => {
+				let mut fire_test = false;
+				for (dx, dy) in self.neighbours.iter() {
+				if let Entry::Water =
+				    self.grid[(x as i8 + dx) as usize][(y as i8 + dy) as usize]
+				{
+				    if self.water_count < self.water_max{
+					fire_test = true;
+					break;
+				    }
+					}
+					}
+				if fire_test {
+					
+					let rand_x = rng.gen_range(1, 99);
+					let rand_y = rng.gen_range(1, 99);
+					self.grid[rand_x][rand_y] = Entry::Fire(FIRE_AGE);
+					Entry::Tree}
+				else{
 			    if age >= 1 {
 				let randagesub = rand::thread_rng().gen_range(0, 2);
 				Entry::Fire(age - randagesub)
-			    } else {
+			     }
+				else {
 				Entry::Burnt(BURNT_AGE)
-			    }
+			    }}
+				
 			}
 			Entry::Empty => {
-			    if rand::thread_rng().gen::<f32>() < self.spawn_tree_prob {
-				Entry::Tree
-			    } else {
-				Entry::Empty
+				let mut fire_water = false;
+				for (dx, dy) in self.neighbours.iter() {
+				if let Entry::Water =
+				self.grid[(x as i8 + dx) as usize][(y as i8 + dy) as usize]
+				{  self.water_prob= rng.gen_range(50.0,80.0) / 100.0;
+				    if rand::thread_rng().gen::<f32>() < self.water_prob && self.water_count < self.water_max && self.water_side_max > self.water_side_count{
+					self.water_count = (self.water_count + 1);
+					self.water_side_count = (self.water_side_count +1);
+					fire_water = true;
+					break;
+				    }
+					}
+			   
 			    }
+				if fire_water{
+				Entry::Water
+				}
+				else { if rand::thread_rng().gen::<f32>() < self.spawn_tree_prob {
+				Entry::Tree
+			    }
+				else { Entry::Empty}
 			}
+			}
+		
 			Entry::Burnt(age) => {
 			    if age >= 1 {
 				Entry::Burnt(age - 1)
@@ -120,11 +190,18 @@ impl event::EventHandler for State {
 				Entry::Burnt(20)
 				}
 			}
+			Entry::Water =>{
+			Entry::Water}
 			_ => Entry::Empty,
 		    }
+		
+		
 		}
-	    }
-	}
+		
+		 self.water_side_max = rng.gen_range(10,12);
+	     self.water_side_count=0}
+	
+		}
 	Ok(())
     }
 
@@ -148,6 +225,7 @@ impl event::EventHandler for State {
 	const GREY: Color = Color::new(0.5,0.5,0.5,1.0);
 	const ORANGE: Color = Color::new(1.0,0.45,0.007,1.0);
 	const YELLOW: Color = Color::new(1.0,0.8,0.0,1.0);
+	const BLUE: Color = Color::new(0.0,0.3,1.0,1.0);
 	graphics::clear(ctx, graphics::BLACK);
 	let dst = nalgebra::Point2::new(0.0, 0.0);
 	let mb = &mut MeshBuilder::new();
@@ -176,6 +254,9 @@ impl event::EventHandler for State {
 		    Entry::Edge => {
 			assign_rect(mb, graphics::WHITE, &mut counter);
 		    }
+			Entry::Water => {
+			assign_rect(mb, BLUE, &mut counter);
+			}
 		}
 	    }
 	}
