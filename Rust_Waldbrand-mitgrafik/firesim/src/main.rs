@@ -11,7 +11,7 @@ const SCREEN_WIDTH: f32 = 1000.0;
 const SCREEN_HEIGHT: f32 = 1000.0;
 const ENTRY_WIDTH: f32 = SCREEN_WIDTH / 100.0;
 const ENTRY_HEIGHT: f32 = SCREEN_HEIGHT / 100.0;
-const FIRE_AGE: u32 = 450;
+const FIRE_AGE: u32 = 300;
 const BURNT_AGE: u32 = 650;
 
 #[derive(Debug, Copy, Clone)]
