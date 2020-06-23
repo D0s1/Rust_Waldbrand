@@ -6,6 +6,8 @@ use ggez::nalgebra;
 use ggez::timer;
 use ggez::{Context, ContextBuilder, GameResult};
 use rand::{Rand, Rng};
+use ggez::input::keyboard;
+use ggez::event::{EventHandler, KeyCode, KeyMods};
 
 const SCREEN_WIDTH: f32 = 1000.0;
 const SCREEN_HEIGHT: f32 = 1000.0;
@@ -74,6 +76,10 @@ impl State {
 impl event::EventHandler for State {
     fn update(&mut self, ctx: &mut Context) -> GameResult<()> {
 	if timer::check_update_time(ctx, 60) {
+	if keyboard::is_mod_active(ctx, KeyMods::SHIFT) {
+                self.fire_prob = 0.05;
+            }
+			else {self.fire_prob = 0.0025}
 	    for y in 1..99 {
 		for x in 1..99 {
 		    self.grid[x][y] = match self.grid[x][y] {
