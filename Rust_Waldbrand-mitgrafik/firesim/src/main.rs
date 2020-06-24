@@ -112,7 +112,7 @@ assert!(now.elapsed() >= wait);}}
 	let mouse_position = ggez::input::mouse::position(ctx);
 	let x = ((mouse_position.x / 10.0)) as usize;
 	let y = ((mouse_position.y / 10.0)) as usize;
-	if (x) >= 100 || (y) >=100
+	if (x) >= 100 || (y) >=100 || x == 0 || y == 0 || x == 99 || y == 99
 	{}
 	else{
 	self.grid[x][y] = match self.grid[x][y] {
@@ -123,7 +123,7 @@ assert!(now.elapsed() >= wait);}}
 	let mouse_position = ggez::input::mouse::position(ctx);
 	let x = ((mouse_position.x / 10.0)) as usize;
 	let y = ((mouse_position.y / 10.0)) as usize;
-	if (x) >= 100 || (y) >=100
+	if (x) >= 100 || (y) >=100 || x == 0 || y == 0 || x == 99 || y == 99
 	{}
 	else{
 	self.grid[x][y] = match self.grid[x][y] {
