@@ -7,6 +7,7 @@ use ggez::timer;
 use ggez::{Context, ContextBuilder, GameResult};
 use rand::{Rand, Rng};
 use ggez::input::keyboard;
+use ggez::input::mouse;
 use ggez::event::{EventHandler, KeyCode, KeyMods};
 
 const SCREEN_WIDTH: f32 = 1000.0;
@@ -21,6 +22,7 @@ enum Entry {
     Edge,
     Empty,
     Tree,
+	Water,
     Fire(u32),
     Burnt(u32),
 }
@@ -77,9 +79,32 @@ impl event::EventHandler for State {
     fn update(&mut self, ctx: &mut Context) -> GameResult<()> {
 	if timer::check_update_time(ctx, 60) {
 	if keyboard::is_mod_active(ctx, KeyMods::SHIFT) {
-                self.fire_prob = 0.05;
+                self.fire_prob = 0.05
             }
 			else {self.fire_prob = 0.0025}
+	if keyboard::is_mod_active(ctx, KeyMods::ALT){
+	let mouse_position = ggez::input::mouse::position(ctx);
+	let x = ((mouse_position.x / 10.0)) as usize;
+	let y = ((mouse_position.y / 10.0)) as usize;
+	if (x) >= 100 || (y) >=100
+	{}
+	else{
+	self.grid[x][y] = match self.grid[x][y] {
+			_ => {Entry::Fire(FIRE_AGE)}}
+			}
+			}
+	if keyboard::is_mod_active(ctx, KeyMods::CTRL){
+	let mouse_position = ggez::input::mouse::position(ctx);
+	let x = ((mouse_position.x / 10.0)) as usize;
+	let y = ((mouse_position.y / 10.0)) as usize;
+	if (x) >= 100 || (y) >=100
+	{}
+	else{
+	self.grid[x][y] = match self.grid[x][y] {
+			_ => {Entry::Water}}
+			}
+			}
+	else {}
 	    for y in 1..99 {
 		for x in 1..99 {
 		    self.grid[x][y] = match self.grid[x][y] {
@@ -126,8 +151,11 @@ impl event::EventHandler for State {
 				Entry::Burnt(20)
 				}
 			}
+			Entry::Water =>{
+			Entry::Water}
 			_ => Entry::Empty,
 		    }
+			
 		}
 	    }
 	}
@@ -154,6 +182,7 @@ impl event::EventHandler for State {
 	const GREY: Color = Color::new(0.5,0.5,0.5,1.0);
 	const ORANGE: Color = Color::new(1.0,0.45,0.007,1.0);
 	const YELLOW: Color = Color::new(1.0,0.8,0.0,1.0);
+	const BLUE: Color = Color::new(0.0,0.0,1.0,1.0);
 	graphics::clear(ctx, graphics::BLACK);
 	let dst = nalgebra::Point2::new(0.0, 0.0);
 	let mb = &mut MeshBuilder::new();
@@ -182,6 +211,9 @@ impl event::EventHandler for State {
 		    Entry::Edge => {
 			assign_rect(mb, graphics::WHITE, &mut counter);
 		    }
+			Entry::Water => {
+			assign_rect(mb, BLUE, &mut counter);
+			}
 		}
 	    }
 	}
