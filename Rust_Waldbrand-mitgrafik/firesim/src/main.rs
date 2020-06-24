@@ -9,6 +9,7 @@ use rand::{Rand, Rng};
 use ggez::input::keyboard;
 use ggez::input::mouse;
 use ggez::event::{EventHandler, KeyCode, KeyMods};
+use std::{thread, time};
 
 const SCREEN_WIDTH: f32 = 1000.0;
 const SCREEN_HEIGHT: f32 = 1000.0;
@@ -39,6 +40,7 @@ impl Rand for Entry {
 struct State {
     grid: [[Entry; 100]; 100],
     fire_prob: f32,
+	pause: bool,
     spawn_tree_prob: f32,
     empty_prob: f32,
     neighbours: [(i8, i8); 8],
@@ -59,6 +61,7 @@ impl State {
 	State {
 	    grid,
 	    fire_prob: 0.0025,
+		pause: false,
 	    spawn_tree_prob: 0.000005,
 	    empty_prob: 0.0002,
 	    neighbours: [
@@ -77,7 +80,30 @@ impl State {
 
 impl event::EventHandler for State {
     fn update(&mut self, ctx: &mut Context) -> GameResult<()> {
+	
 	if timer::check_update_time(ctx, 60) {
+	if self.pause{
+	if keyboard::is_key_pressed(ctx, KeyCode::P){ 
+	self.pause =  false;
+	let wait = time::Duration::from_millis(500);
+	let now = time::Instant::now();
+
+	thread::sleep(wait);
+
+assert!(now.elapsed() >= wait);}}
+	else{
+	if keyboard::is_key_pressed(ctx, KeyCode::P){ 
+	self.pause =  true;
+	let wait = time::Duration::from_millis(500);
+	let now = time::Instant::now();
+
+	thread::sleep(wait);
+
+	assert!(now.elapsed() >= wait);}
+	
+
+	
+	
 	if keyboard::is_mod_active(ctx, KeyMods::SHIFT) {
                 self.fire_prob = 0.05
             }
@@ -176,7 +202,7 @@ impl event::EventHandler for State {
 			
 		}
 	    }
-	}
+	}}
 	Ok(())
     }
 
