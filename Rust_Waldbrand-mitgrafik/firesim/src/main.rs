@@ -82,18 +82,10 @@ impl event::EventHandler for State {
     fn update(&mut self, ctx: &mut Context) -> GameResult<()> {
 	
 	if timer::check_update_time(ctx, 60) {
-	if self.pause{
+	
 	if keyboard::is_key_pressed(ctx, KeyCode::P){ 
-	self.pause =  false;
-	let wait = time::Duration::from_millis(500);
-	let now = time::Instant::now();
-
-	thread::sleep(wait);
-
-assert!(now.elapsed() >= wait);}}
-	else{
-	if keyboard::is_key_pressed(ctx, KeyCode::P){ 
-	self.pause =  true;
+	if self.pause{self.pause = false;}
+	else {self.pause = true}
 	let wait = time::Duration::from_millis(500);
 	let now = time::Instant::now();
 
@@ -147,8 +139,9 @@ assert!(now.elapsed() >= wait);}}
 	}
 	    }
 			}
+			
 			}
-	else {}
+	if self.pause==false {
 	    for y in 1..99 {
 		for x in 1..99 {
 		    self.grid[x][y] = match self.grid[x][y] {
