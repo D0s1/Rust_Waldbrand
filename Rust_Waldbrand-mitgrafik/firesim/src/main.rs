@@ -104,6 +104,24 @@ impl event::EventHandler for State {
 			_ => {Entry::Water}}
 			}
 			}
+	if keyboard::is_key_pressed(ctx, KeyCode::R){ {
+	
+	}
+	for y in 1..99 {
+	    for x in 1..99 {
+		let mut rng = rand::thread_rng();
+		let mut i = rand::thread_rng().gen::<f32>();
+	    if i < 0.1 {
+		self.grid[x][y] = match self.grid[x][y] {
+		_ => {Entry::Empty}}}
+		else {
+		self.grid[x][y] = match self.grid[x][y] {
+		_ => {Entry::Tree}}
+	    
+	}
+	    }
+			}
+			}
 	else {}
 	    for y in 1..99 {
 		for x in 1..99 {
