@@ -83,8 +83,9 @@ impl event::EventHandler for State {
 	
 	if timer::check_update_time(ctx, 60) {
 	
-	let mut firemul= 2 as u32;
-	let mut fw = 20 as u32;
+	let mut firemul= 2 as u32; //Feuere Ausbreitungsfaktro
+	let mut fw = 20 as u32; //Fast fw fuer FireAge
+	let mut bfw=1 as u32; //Burnt Fast Forward
 	
 	if keyboard::is_key_pressed(ctx, KeyCode::P){ 
 	if self.pause{self.pause = false;}
@@ -100,10 +101,17 @@ impl event::EventHandler for State {
 	
 	
 	if keyboard::is_mod_active(ctx, KeyMods::SHIFT) {
-                self.fire_prob = 0.05;
-				firemul = fw
+				// Hier Variablen anpassen für FW
+                self.fire_prob = 0.05;   //Feuer ausbreitgeschwindigkeit
+				self.spawn_tree_prob= 0.0005; // Baueme spawnen
+				bfw=600;   // 650 - bfw = Zeit bis Empty spawnen kann
+				self.empty_prob = 0.0105;  //Wahrscheinlichkeit das Empty spawn kannen pro tick nach zeit
+				firemul = fw  //Wird fuer Abfragen benoetigt, zum veraender fw oben bearbeiten!!
             }
 			else {self.fire_prob = 0.0025;
+			self.spawn_tree_prob= 0.000005;
+			self.empty_prob=0.0002;
+			bfw=1;
 			firemul=2}
 	if keyboard::is_mod_active(ctx, KeyMods::ALT){
 	let mouse_position = ggez::input::mouse::position(ctx);
@@ -193,7 +201,7 @@ impl event::EventHandler for State {
 			    }
 			}
 			Entry::Burnt(age) => {
-			    if age >= 1 {
+			    if age >= bfw {
 				Entry::Burnt(age - 1)
 			    } else if rand::thread_rng().gen::<f32>() < self.empty_prob {
 				Entry::Empty
