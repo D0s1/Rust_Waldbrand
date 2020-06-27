@@ -178,20 +178,12 @@ impl event::EventHandler for State {
 			}
 
 			Entry::Fire(age) => {
-			if firemul ==fw{
-			if age >=fw
-			{
-			let randagesub = rand::thread_rng().gen_range(0, firemul);
-			Entry::Fire(age - randagesub)}
-			else{Entry::Burnt(BURNT_AGE)}
-			}
-			else{
-			    if age >= 1 {
-				let randagesub = rand::thread_rng().gen_range(0, 2);
+			    if age >= (fw-1) {
+				let randagesub = rand::thread_rng().gen_range(0,firemul);
 				Entry::Fire(age - randagesub)
 			    } else {
 				Entry::Burnt(BURNT_AGE)
-			    }}
+			    }
 			}
 			Entry::Empty => {
 			    if rand::thread_rng().gen::<f32>() < self.spawn_tree_prob {
