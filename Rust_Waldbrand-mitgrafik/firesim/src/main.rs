@@ -104,8 +104,8 @@ impl event::EventHandler for State {
 				// Hier Variablen anpassen für FW
                 self.fire_prob = 0.05;   //Feuer ausbreitgeschwindigkeit
 				self.spawn_tree_prob= 0.0005; // Baueme spawnen
-				bfw=600;   // 650 - bfw = Zeit bis Empty spawnen kann
-				self.empty_prob = 0.0105;  //Wahrscheinlichkeit das Empty spawn kannen pro tick nach zeit
+				bfw=550;   // 650 - bfw = Zeit bis Empty spawnen kann
+				self.empty_prob = 0.001;  //Wahrscheinlichkeit das Empty spawn kannen pro tick nach zeit
 				firemul = fw  //Wird fuer Abfragen benoetigt, zum veraender fw oben bearbeiten!!
             }
 			else {self.fire_prob = 0.0025;
