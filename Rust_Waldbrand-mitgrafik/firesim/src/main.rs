@@ -83,6 +83,9 @@ impl event::EventHandler for State {
 	
 	if timer::check_update_time(ctx, 60) {
 	
+	let mut firemul= 2 as u32;
+	let mut fw = 20 as u32;
+	
 	if keyboard::is_key_pressed(ctx, KeyCode::P){ 
 	if self.pause{self.pause = false;}
 	else {self.pause = true}
@@ -97,9 +100,11 @@ impl event::EventHandler for State {
 	
 	
 	if keyboard::is_mod_active(ctx, KeyMods::SHIFT) {
-                self.fire_prob = 0.05
+                self.fire_prob = 0.05;
+				firemul = fw
             }
-			else {self.fire_prob = 0.0025}
+			else {self.fire_prob = 0.0025;
+			firemul=2}
 	if keyboard::is_mod_active(ctx, KeyMods::ALT){
 	let mouse_position = ggez::input::mouse::position(ctx);
 	let x = ((mouse_position.x / 10.0)) as usize;
@@ -165,12 +170,20 @@ impl event::EventHandler for State {
 			}
 
 			Entry::Fire(age) => {
+			if firemul ==fw{
+			if age >=fw
+			{
+			let randagesub = rand::thread_rng().gen_range(0, firemul);
+			Entry::Fire(age - randagesub)}
+			else{Entry::Burnt(BURNT_AGE)}
+			}
+			else{
 			    if age >= 1 {
 				let randagesub = rand::thread_rng().gen_range(0, 2);
 				Entry::Fire(age - randagesub)
 			    } else {
 				Entry::Burnt(BURNT_AGE)
-			    }
+			    }}
 			}
 			Entry::Empty => {
 			    if rand::thread_rng().gen::<f32>() < self.spawn_tree_prob {
