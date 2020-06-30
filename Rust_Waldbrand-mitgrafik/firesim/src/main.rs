@@ -277,7 +277,7 @@ impl event::EventHandler for State {
 fn main() {
     let mut c = conf::Conf::new();
     c.window_setup.title = "Waldbrandsimulator".to_owned();
-    //c.window_setup.icon = "/baum.png".to_owned();
+    //c.window_setup.icon = "/baum.png".to_owned(); Wenn Bild hinzugefügt
     c.window_mode.width = SCREEN_WIDTH;
     c.window_mode.height = SCREEN_HEIGHT;
     let (ref mut ctx, ref mut event_loop) = ContextBuilder::new("Firesim", "linus")
