@@ -83,8 +83,8 @@ impl event::EventHandler for State {
 	
 	if timer::check_update_time(ctx, 60) {
 	
-	let mut firemul= 2 as u32; //Feuere Ausbreitungsfaktro
-	let mut fw = 20 as u32; //Fast fw fuer FireAge
+	let mut firemul= 2 as u32; //Feuer Ausbreitungsfaktor
+	let mut fw = 20 as u32; //Fast-fw fuer FireAge
 	let mut bfw=1 as u32; //Burnt Fast Forward
 	
 	if keyboard::is_key_pressed(ctx, KeyCode::P){ 
@@ -102,11 +102,11 @@ impl event::EventHandler for State {
 	
 	if keyboard::is_mod_active(ctx, KeyMods::SHIFT) {
 				// Hier Variablen anpassen für FW
-                self.fire_prob = 0.05;   //Feuer ausbreitgeschwindigkeit
+                self.fire_prob = 0.05;   //Feuer-ausbreitgeschwindigkeit
 				self.spawn_tree_prob= 0.0005; // Baueme spawnen
 				bfw=550;   // 650 - bfw = Zeit bis Empty spawnen kann
-				self.empty_prob = 0.001;  //Wahrscheinlichkeit das Empty spawn kannen pro tick nach zeit
-				firemul = fw  //Wird fuer Abfragen benoetigt, zum veraender fw oben bearbeiten!!
+				self.empty_prob = 0.001;  //Wahrscheinlichkeit das Empty spawnen kann pro tick nach Zeit
+				firemul = fw  //Wird fuer Abfragen benoetigt, zum veraendern fw oben bearbeiten!!
             }
 			else {self.fire_prob = 0.0025;
 			self.spawn_tree_prob= 0.000005;
